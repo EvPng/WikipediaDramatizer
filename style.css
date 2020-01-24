@@ -1,0 +1,203 @@
+body {
+  padding: 1em;
+  /*font-family: 'Cormorant Garamond', serif;*/
+  font-family: 'Open Sans', sans-serif;
+}
+
+.wrapper {
+  display: flex;
+  flex-flow: row wrap;
+  font-weight: bold;
+  text-align: center;
+}
+
+
+.controls {
+  /*border: 1px solid darkgreen;*/
+  padding: 10px;
+  flex: 1 100%;
+}
+
+.header {
+  /*border: 1px solid lightgreen;*/
+  padding: 10px;
+  flex: 1 100%;
+  font-size: 36px;
+  font-weight: 600;
+}
+
+.inner-flex {
+  flex: 1 100%;
+}
+
+
+#inner-container {
+  /*border: 1px solid red;*/
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 1%;
+
+}
+
+#slideLeft {
+  flex-basis: 10%;
+  margin-right: 10px;
+}
+
+#pieChart {
+  flex-basis: 10%;
+  margin-right: 10px;
+  width: 1000px;
+  height: 1000px;
+}
+
+#slideRight {
+  flex-basis: 10%;
+  margin-left: 10px;
+}
+
+.main {
+  text-align: left;
+  white-space: nowrap;
+  overflow-x: scroll;
+  flex-basis: 80%;
+  /*width: 100px;*/
+}
+
+.aside-1 {
+  /*border: 1px solid black;*/
+  max-height: 50vh;
+  overflow: auto;
+  padding: 5px;
+}
+
+.aside-2 {
+  /*border: 1px solid orange;*/
+  max-height: 50vh;
+  padding: 5px;
+
+}
+
+.aside-2 img {
+  max-width: 100%;
+}
+
+@media all and (min-width: 600px) {
+  .aside {
+    flex: 1 0 0;
+  }
+
+}
+
+
+path {  stroke: #fff; }
+path:hover {  opacity:0.9; }
+rect {transition: fill .5s;}
+rect:hover {  
+  fill:rosybrown;
+  transition: .5s;
+}
+
+.axis {
+  font: 15px sans-serif;
+}
+.legend tr{    border-bottom:1px solid grey; }
+.legend tr:first-child{    border-top:1px solid grey; }
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {  display: none; }
+.legend{
+    margin:10px;
+    display: inline-flex;
+    overflow: auto;
+    /*display:inline-block;
+    border-collapse: collapse;
+    border-spacing: 0px;*/
+}
+.legend td{
+    padding:4px 5px;
+    vertical-align:bottom;
+}
+.legendFreq, .legendPerc{
+    align:left;
+    width:70px;
+}
+
+
+text.month-name,
+text.calendar-heatmap-legend-text,
+text.day-initial {
+  font-size: 10px;
+  fill: inherit;
+  /*font-family: 'Open Sans', sans-serif;*/
+  font-family: 'Open Sans', sans-serif;
+}
+
+rect.day-cell:hover {
+  fill: #4E4B49;
+  stroke: #4E4B49;
+  stroke-width: 1px;
+}
+.day-cell-tooltip {
+  position: absolute;
+  z-index: 9999;
+  padding: 5px 9px;
+  color: #bbbbbb;
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 3px;
+  text-align: center;
+}
+.day-cell-tooltip > span {
+  font-family: Helvetica, arial, 'Open Sans', sans-serif
+}
+.calendar-heatmap {
+  box-sizing: initial;
+}
+
+
+svg {
+  
+  /*width: inherit;
+  height: inherit;*/
+  /*margin: 10px;*/
+  padding: 3%;
+  overflow: visible;
+}
+
+
+path.slice{
+  stroke-width:2px;
+}
+
+polyline{
+  opacity: .7;
+  stroke: gray;
+  stroke-width: 1px;
+  fill: none;
+}
+
+.button-main {
+  background-color: white;
+  border-width: 1px;
+  border-color: gray;
+  color: black;
+  padding: 5px 16px;
+  margin: 2px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.button-main:hover {
+  background-color: black;
+  color: white;
+  transition: .5s;
+}
