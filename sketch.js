@@ -45,7 +45,6 @@ function setup() {
 
 	function goWiki(term){
 
-
 		//let term = userInput.value()
 		let currentTitle = term;
         let language = searchLanguage.value();
@@ -55,15 +54,12 @@ function setup() {
 
         let newUrl = "https://" + language  + originalSearch + currentTitle;
 
-
-
 		if (currentTitle.length >= 1)
 		{
 			console.log(currentTitle);
 			loadJSON(newUrl, gotSearch, 'jsonp');
 
 		}
-	
 
 	}
 
@@ -76,8 +72,16 @@ function setup() {
 
             let len = data[1].length;
             let title = data[1][0];
+            document.getElementById("print-title").innerHTML = title;
+            document.getElementById("calendar-heading").innerHTML = `Frequency of Edits by Day`;
+            document.getElementById("calendar-subheading").innerHTML = `Hover to see and click to print edit number on each day`;
+            document.getElementById("stats-heading").innerHTML = `Stats`;
+            document.getElementById("stats-subheading").innerHTML = `Print interactive statistics, scroll down for all `;
+            document.getElementById("dashboard-heading").innerHTML = `Number of Edits in each Section`;
+            document.getElementById("dashboard-subheading").innerHTML = `Hover on section to see breakdown of it's editors and contributions`;
+            
             title = title.replace(/\s+/g, '_');
-            createDiv(title);
+            // createDiv(title);
             console.log('Querying: ' + title);
 
             let newUrl = "https://" + language  + search1 + title + search2 + startDate.value + searchAfterEndDate + endDate.value + searchAfterEndDate;
@@ -128,14 +132,10 @@ function setup() {
                         addContributorInfo(mySubString, data[i].user, data[i].comment);
                         addTimeStampInfo(data[i].timestamp, mySubString);
 
-
 				   }
 				}
 
-
-
 			}
-
 					
 					sortSectionList(headings);
 					console.log(headings);
@@ -144,7 +144,6 @@ function setup() {
                     pie(headings[0]);
                     makeCalendar(editDates, startDate, endDate);
                     console.log(editDates);
-
 
 		}
 
@@ -238,9 +237,6 @@ function setup() {
                                 editDates[c].sections.push(new EditDateSection(section))
                             }
 
-
-
-
                         }
 
                     }
@@ -281,8 +277,6 @@ function setup() {
                 // button.listValue = i;
                 // //button.mousePressed(SelectionButtonPress(this.listValue));
                 printedHeadings[i] = button;
-
-
  			}
 		}
 
@@ -294,12 +288,7 @@ function setup() {
         function mousePressed(event) {
             console.log(event);
             console.log("button is pressed! ");
-
-}
-
-		
-
- 
+        }
 }
 
 function pie(originalData) {
@@ -320,17 +309,19 @@ function pie(originalData) {
         piesvg.append("g")
             .attr("class", "lines");
 
+        currentWidth = parseInt(d3.select("#pieChart").style('width'), 10);
+
         d3.select("pieChart").select("svg")
-            .attr("width", 1000)
-            .attr("height", 1000)
+            .attr("width", currentWidth)
+            .attr("height", currentWidth)
 
 
-        // PicurrentWidth = parseInt(d3.select('.col-md-6').style('width'), 10)
-        // PicurrentHeight = parseInt(d3.select('.col-md-6').style('height'), 10)
+        PicurrentWidth = parseInt(d3.select('#pieChart').style('width'), 10);
+        PicurrentHeight = parseInt(d3.select('#pieChart').style('height'), 10);
 
-        var width = 960,
-            height = 450,
-            radius = Math.min(width, height) / 2;
+        var width = PicurrentWidth, //960
+            height = PicurrentHeight,  //450
+            radius = Math.min(width, height) / 2.5;
 
         var pie = d3.layout.pie()
             .sort(null)
@@ -383,148 +374,144 @@ function pie(originalData) {
 
 change(inputData());
 
-d3.select("#randomize")
-    .on("click", function(){
-        change(inputData());
-    });
+// d3.select("#randomize")
+//     .on("click", function(){
+//         change(inputData());
+//     });
+
+function change(data) {
+
+    var userpage = "";
+
+    /* ------- PIE SLICES -------*/
+    var slice = piesvg.select(".slices").selectAll("path.slice")
+        .data(pie(data), key);
+
+    slice.enter()
+        .insert("path")
+        .style("fill", function(d) {return color(d.data.label); })
+        .attr("class", "slice")
+        .on("mouseover", function(d) { mouseover (d.data.comments, d.data.names); return color(d.data.label); })
 
 
+    slice       
+        .transition().duration(1000)
+        .attrTween("d", function(d) {
+            this._current = this._current || d;
+            var interpolate = d3.interpolate(this._current, d);
+            this._current = interpolate(0);
+            return function(t) {
+                return arc(interpolate(t));
+            };
+        })
 
+    slice.exit()
+        .remove();
 
-        function change(data) {
+    /* ------- TEXT LABELS -------*/
 
-            var userpage = "";
+    var text = piesvg.select(".labels").selectAll("text")
+        .data(pie(data), key);
 
-            /* ------- PIE SLICES -------*/
-            var slice = piesvg.select(".slices").selectAll("path.slice")
-                .data(pie(data), key);
+    text.enter()
+        .append("text")
+        .attr("dy", "0.35em")
+        .text(function(d) {
+            return d.data.label;
+        });
+    
+    function midAngle(d){
+        return d.startAngle + (d.endAngle - d.startAngle)/2;
+    }
 
-            slice.enter()
-                .insert("path")
-                .style("fill", function(d) {return color(d.data.label); })
-                .attr("class", "slice")
-                .on("mouseover", function(d) { mouseover (d.data.comments, d.data.names); return color(d.data.label); })
-
-
-            slice       
-                .transition().duration(1000)
-                .attrTween("d", function(d) {
-                    this._current = this._current || d;
-                    var interpolate = d3.interpolate(this._current, d);
-                    this._current = interpolate(0);
-                    return function(t) {
-                        return arc(interpolate(t));
-                    };
-                })
-
-            slice.exit()
-                .remove();
-
-            /* ------- TEXT LABELS -------*/
-
-            var text = piesvg.select(".labels").selectAll("text")
-                .data(pie(data), key);
-
-            text.enter()
-                .append("text")
-                .attr("dy", ".35em")
-                .text(function(d) {
-                    return d.data.label;
-                });
-            
-            function midAngle(d){
-                return d.startAngle + (d.endAngle - d.startAngle)/2;
+    function mouseover(comments, username) {
+        
+        //print the comments for the given user
+        const myNode = document.getElementById("print");
+            while (myNode.firstChild) {
+            myNode.removeChild(myNode.firstChild);
             }
 
-            function mouseover(comments, username) {
-                
-                //print the comments for the given user
-                const myNode = document.getElementById("print");
-                  while (myNode.firstChild) {
-                    myNode.removeChild(myNode.firstChild);
-                  }
+        //print the user's name
+        var div1=document.getElementById("print");//get the div element
+        var newButton = document.createElement("button");
+        newButton.innerHTML = `See user ${username}'s profile`;
+        newButton.onclick = userSelect;
+        div1.appendChild(newButton);
+        div1.innerHTML += `<br /> Revision Comments: `
 
-                //print the user's name
-                var div1=document.getElementById("print");//get the div element
-                var newButton = document.createElement("button");
-                newButton.innerHTML = username;
-                newButton.onclick = userSelect;
-                div1.appendChild(newButton);
+        //print the comments
+        for (let i = 0; i < comments.length; i++)
+        {
 
+            var div1=document.getElementById("print");//get the div element
+            var div2=document.createElement("div");//create a new div
+            div2.innerHTML=comments[i];
 
+            div1.appendChild(div2);// append to div
+        }
 
-                //print the comments
-                for (let i = 0; i < comments.length; i++)
-                {
+        //make the new current url the correct one based on the user that's being viewed
+        username = username.replace(/\s+/g, '_');
+        var language = select('#languageinput').value();
+        var original = ".wikipedia.org/wiki/User:"
+        var finalstring = "https://" + language + original + username;
+        userpage = finalstring;
 
-                    var div1=document.getElementById("print");//get the div element
-                    var div2=document.createElement("div");//create a new div
-                    div2.innerHTML=comments[i];
+    }
 
-                    div1.appendChild(div2);// append to div
-                }
+    function userSelect(){
+                    window.open( userpage, "_blank"); 
+    }
 
-                //make the new current url the correct one based on the user that's being viewed
-                username = username.replace(/\s+/g, '_');
-                var language = select('#languageinput').value();
-                var original = ".wikipedia.org/wiki/User:"
-                var finalstring = "https://" + language + original + username;
-                userpage = finalstring;
+    text.transition().duration(1000)
+        .attrTween("transform", function(d) {
+            this._current = this._current || d;
+            var interpolate = d3.interpolate(this._current, d);
+            this._current = interpolate(0);
+            return function(t) {
+                var d2 = interpolate(t);
+                var pos = outerArc.centroid(d2);
+                pos[0] = radius * (midAngle(d2) < Math.PI ? 1 : -1);
+                return "translate("+ pos +")";
+            };
+        })
+        .styleTween("text-anchor", function(d){
+            this._current = this._current || d;
+            var interpolate = d3.interpolate(this._current, d);
+            this._current = interpolate(0);
+            return function(t) {
+                var d2 = interpolate(t);
+                return midAngle(d2) < Math.PI ? "start":"end";
+            };
+        });
 
-            }
+    text.exit()
+        .remove();
 
-            function userSelect(){
-                            window.open( userpage, "_blank"); 
-            }
+    /* ------- SLICE TO TEXT POLYLINES -------*/
 
-            text.transition().duration(1000)
-                .attrTween("transform", function(d) {
-                    this._current = this._current || d;
-                    var interpolate = d3.interpolate(this._current, d);
-                    this._current = interpolate(0);
-                    return function(t) {
-                        var d2 = interpolate(t);
-                        var pos = outerArc.centroid(d2);
-                        pos[0] = radius * (midAngle(d2) < Math.PI ? 1 : -1);
-                        return "translate("+ pos +")";
-                    };
-                })
-                .styleTween("text-anchor", function(d){
-                    this._current = this._current || d;
-                    var interpolate = d3.interpolate(this._current, d);
-                    this._current = interpolate(0);
-                    return function(t) {
-                        var d2 = interpolate(t);
-                        return midAngle(d2) < Math.PI ? "start":"end";
-                    };
-                });
+    var polyline = piesvg.select(".lines").selectAll("polyline")
+        .data(pie(data), key);
+    
+    polyline.enter()
+        .append("polyline");
 
-            text.exit()
-                .remove();
-
-            /* ------- SLICE TO TEXT POLYLINES -------*/
-
-            var polyline = piesvg.select(".lines").selectAll("polyline")
-                .data(pie(data), key);
-            
-            polyline.enter()
-                .append("polyline");
-
-            polyline.transition().duration(1000)
-                .attrTween("points", function(d){
-                    this._current = this._current || d;
-                    var interpolate = d3.interpolate(this._current, d);
-                    this._current = interpolate(0);
-                    return function(t) {
-                        var d2 = interpolate(t);
-                        var pos = outerArc.centroid(d2);
-                        pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
-                        return [arc.centroid(d2), outerArc.centroid(d2), pos];
-                    };          
-                });
-            
-            polyline.exit()
-                .remove();
+    polyline.transition().duration(1000)
+        .attrTween("points", function(d){
+            this._current = this._current || d;
+            var interpolate = d3.interpolate(this._current, d);
+            this._current = interpolate(0);
+            return function(t) {
+                var d2 = interpolate(t);
+                var pos = outerArc.centroid(d2);
+                pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
+                return [arc.centroid(d2), outerArc.centroid(d2), pos];
+            };          
+        });
+    
+    polyline.exit()
+        .remove();
 };
 }
 
@@ -533,24 +520,20 @@ function dashboard(id, fData){
     var barColor = '#d3d3d3'; //#4E4B49
 
     function histoGram(fD){
-        var hG={},    hGDim = {t: 2, r: 2, b: 2, l: 280};
+        var hG={},    hGDim = {t: 2, r: 120, b: 2, l: 270};
         
         currentWidth = parseInt(d3.select(id).style('width'), 10)
         
-
         hGDim.w = currentWidth - hGDim.l - hGDim.r;     
         hGDim.h = fD.length * 25 - hGDim.t - hGDim.b;
-        // console.log("lalalalal"+fD.length)
-
-            
+   
         //create svg for histogram.
         var hGsvg = d3.select(id).append("svg")
             .attr("width", hGDim.w + hGDim.l + hGDim.r)
             .attr("height", hGDim.h + hGDim.t + hGDim.b)
             .append("g")
             .attr("transform", "translate(" + hGDim.l + "," + hGDim.t + ")");
-
-        
+       
         // Create function for x-axis map.
         var x = d3.scale.linear().range([0, hGDim.w - 5])
                 .domain([0, d3.max(fD, function(d) { return d[1]; })]);
@@ -559,11 +542,28 @@ function dashboard(id, fData){
         var y = d3.scale.ordinal().rangeRoundBands([0, hGDim.h], 0.1)
                 .domain(fD.map(function(d) { return d[0]; }));
 
-        // Add y-axis to the histogram svg.
+        // Add y-axis to the histogram svg. (vertical)
         hGsvg.append("g").attr("class", "y axis")
             .attr("transform", "translate(0," + hGDim.w  + '%' + ")")
             .call(d3.svg.axis().scale(y).orient("left"))
+            .selectAll("text")
+            .attr("font-size", "0.65rem")
+            .attr("font-weight", "500")
             // .selectAll("text").attr("transform", "rotate(-25)");
+
+        hGsvg.append("text")
+            .attr("class", "title-right")
+            .attr("x", 8)
+            .attr("y", 0)
+            .attr("font-weight", 700)
+            .text("No. of Edits per Section");
+
+        hGsvg.append("text")
+            .attr("class", "title-left")
+            .attr("x", -102)
+            .attr("y", 0)
+            .attr("font-weight", 700)
+            .text("Page Sections");
 
         // Create bars for histogram to contain rectangles and freq labels.
         var bars = hGsvg.selectAll(".bar").data(fD).enter()
@@ -579,36 +579,34 @@ function dashboard(id, fData){
             .on("mouseover",mouseover)// mouseover is defined below.
             // .on("mouseout",mouseout);// mouseout is defined below.
 
-            console.log(fD);
-        //bars.append("text").text("hello")//{ return d3.format(",")(d[1])})
         let i = -1;
-        bars.append("text").text(function(d){ 
-            i++
-            let string = fD[i][0];
-            let addedString = ":  ";
-            addedString += string;
-            //previously had been printing the labels, now just keeping it only the number of edits
-            return "  "
-
-        })
-            .attr("x", function(d) { return x(d[1])+10; })
-            .attr("y", function(d) { return y(d[0])+y.rangeBand()/2+6; })
-            .attr("text-anchor", "start");
-
+        // bars.append("text").text(function(d){ 
+        //     i++
+        //     let string = fD[i][0];
+        //     let addedString = ":  ";
+        //     addedString += string;
+        //     return string //"  "
+        // })
+        //     .attr("x", function(d) { return 0; })  //x(d[1])+10
+        //     .attr("y", function(d) { return y(d[0])+y.rangeBand()/2+6; })
+        //     .attr("text-anchor", "end");
 
         //Create the frequency labels above the rectangles.
         bars.append("text").text(function(d){ return d3.format(",")(d[1])})
-            .attr("x", function(d) { return x(d[1])+10; })
+            .attr("x", function(d) { return x(d[1])+20; })
             .attr("y", function(d) { return y(d[0])+y.rangeBand()/2+6; })
             .attr("text-anchor", "end");
 
-        
         function mouseover(d){  // utility function to be called on mouseover.
             // filter for selected state.
             var st = fData.filter(function(s){ return s.title == d[0];})[0],
                 nD = d3.keys(st.freq).map(function(s){ return {type:s, freq:st.freq[s]};});
                 console.log(st.title);
                 pie(headings[st.order]);
+
+            document.getElementById("pieChart-heading").innerHTML = `Who Edited on Section: ${st.title}`;
+            document.getElementById("pieChart-subheading").innerHTML = `Hover to see user profile and revision comments`;
+
 
             //go to the page section
                 const myNode = document.getElementById("pageHistory");
@@ -624,7 +622,7 @@ function dashboard(id, fData){
                 var div1=document.getElementById("pageHistory");//get the div element
                 var newButton = document.createElement("button");
                 var pageTitle = select('#userinput').value();
-                newButton.innerHTML = pageTitle + " revision history";
+                newButton.innerHTML = "See '" + pageTitle + "' revision history on Wikipedia";
                 newButton.onclick = pageSelect;
                 div1.appendChild(newButton);
 
@@ -640,7 +638,7 @@ function dashboard(id, fData){
                 var div2=document.getElementById("print");//get the div element
                 var newButton2 = document.createElement("button");
                 var pageSection = st.title;
-                newButton2.innerHTML = "Go to section: " + pageSection;
+                newButton2.innerHTML = "Go to section '" + pageSection + "' on Wikipedia";
                 newButton2.onclick = sectionSelect;
                 div2.appendChild(newButton2);
 
@@ -651,8 +649,6 @@ function dashboard(id, fData){
 
                 var spage = "https://" + language + original_2 + pageTitle + "#" + pageSection;
 
-            
-
             function pageSelect(){
                             window.open( hpage, "_blank"); 
             }
@@ -660,29 +656,29 @@ function dashboard(id, fData){
             function sectionSelect(){
                             window.open( spage, "_blank"); 
             }
-               
+
         }
         
         
         // create function to update the bars. This will be used by pie-chart.
-        hG.update = function(nD, color){
-            // update the domain of the y-axis map to reflect change in frequencies.
-            x.domain([0, d3.max(nD, function(d) { return d[1]; })]);
+        // hG.update = function(nD, color){
+        //     // update the domain of the y-axis map to reflect change in frequencies.
+        //     x.domain([0, d3.max(nD, function(d) { return d[1]; })]);
             
-            // Attach the new data to the bars.
-            var bars = hGsvg.selectAll(".bar").data(nD);
+        //     // Attach the new data to the bars.
+        //     var bars = hGsvg.selectAll(".bar").data(nD);
             
-            // transition the height and color of rectangles.
-            bars.select("rect").transition().duration(500)
-                .attr("x", 0)
-                .attr("width", function(d) { return x(d[1]); })
-                .attr("fill", color);
+        //     // transition the height and color of rectangles.
+        //     bars.select("rect").transition().duration(500)
+        //         .attr("x", 0)
+        //         .attr("width", function(d) { return x(d[1]); })
+        //         .attr("fill", color);
 
-            // transition the frequency labels location and change value.
-            bars.select("text").transition().duration(500)
-                .text(function(d){ return d3.format(",")(d[1])})
-                .attr("x", function(d) {return y(d[1])+5; });            
-        }        
+        //     // transition the frequency labels location and change value.
+        //     bars.select("text").transition().duration(500)
+        //         .text(function(d){ return d3.format(",")(d[1])})
+        //         .attr("x", function(d) {return y(d[1])+5; });            
+        // }        
         return hG;
     }
     
@@ -725,11 +721,12 @@ function makeCalendar(editDates, startDate, endDate) {
                     //pie(headings[st.order]);
                     //console.log(editDates);
                     //pie(editDates[0]);
-                    console.log('data', data);
-                    document.getElementById("print").innerHTML = JSON.stringify(data);
+                    console.log('data', data.date);
+                    // const strData = JSON.stringify(data);
+                    document.getElementById("print-date").innerHTML = `Date:  ${data.date.getMonth()+1}-${data.date.getDate()}-${data.date.getFullYear()}`
+                    document.getElementById("print-count").innerHTML =`Total edits on that day:  ${data.count}`;
                   });
     heatmap();  // render the chart
-
 }
 
 

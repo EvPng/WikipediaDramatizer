@@ -1,80 +1,97 @@
 <!DOCTYPE html>
 <html lang="">
 <head>
-<meta charset="utf-8">
-
-<script src="https://d3js.org/d3.v3.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js" charset="utf-8"></script> 
-
-<!-- <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet"> -->
-<link href="https://fonts.googleapis.com/css?family=Cinzel|Cormorant+Garamond|Nixie+One&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="style.css">
-
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js" charset="utf-8"></script> 
+  <!-- <link href="https://fonts.googleapis.com/css?family=Cinzel|Cormorant+Garamond|Nixie+One&display=swap" rel="stylesheet"> -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="reset.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 
-
-
 <body>
-
-<div class="wrapper">
-
-
-
-  <header class='header'>Wikipedia Dramatizer 2</header>
-
-  <div class='controls'>
-    Word: <input id="userinput" value=""></input>
-                <input type="date" input id="startDate" name="trip-start"
-       value="2018-11-01">
-               <input type="date" input id="endDate" name="trip-start"
-       value="2019-07-22">
-
-    Langauge: <input id="languageinput" value="en"></input>
-
-    <!-- <button class="button-main" id="randomize">randomize</button> -->
-    <button class="button-main" id="go">go</button>
-
-  </div>
-        
-
-
-  <div class="inner-flex">
-    <div id="inner-container">
-
-        <div class="main" id='calendar'></div>
-      <!-- <button id="slideRight" type="button">R</button> -->
+  <div class="wrapper">
+    <div class="nav">
+      <div class='header'>
+        <header>Wikipedia Dramatizer 3</header>
+        <p>Wikipedia Dramatizer is a web tool to examine the edit history of 
+          Wikipedia to expose contested areas of knowledge. In addition to providing 
+          openings to discovering interesting stories, the Dramatizer is intended to 
+          humanize the landscape of Wikipedia editing. It can serve as a reminder of 
+          the distinct and overlapping conversations and communities that form around 
+          the creation of articles, as well as the individuals who contribute to the 
+          editing process on their own.</p>
+      </div>
+      <p>Visualize Wikipedia page edit history by specifying the word and time frame below:</p>
+      <div class='controls'>
+        Word: <input id="userinput" value="" placeholder="pandemic"></input>
+              <input type="date" input id="startDate" name="trip-start"
+                value="2019-11-01"></input>
+              <input type="date" input id="endDate" name="trip-start"
+                value="2020-07-22"></input>
+  
+        Langauge: <input id="languageinput" value="en"></input>
+        <!-- <button class="button-main" id="randomize">randomize</button> -->
+        <button class="button-main" id="go">Search</button>
+      </div>
     </div>
+
+    <div class="main">
+      <section class="container">
+        <p class="inner-flex" id="print-title"></p>
+      </section>
+      <section class="container">
+        <div class="two-thirds heading">
+          <h2 id='calendar-heading'></h2>
+          <p id='calendar-subheading'></p>
+        </div>
+        <div class="one-third heading">
+          <h2 id='stats-heading'></h2>
+          <p id='stats-subheading'></p>
+        </div>
+        <div class="two-thirds">
+          <div class="inner-flex" id='calendar'></div>
+        </div>
+        <div class="one-third" id="stats">
+          <p class="print" id="print-date"></p>
+          <p class="print" id="print-count"></p>
+          <p class="inner-flex" id="pageHistory"></p>
+          <p class="inner-flex" id="print"></p>
+        </div>
+      </section>
+      <section class="container">
+        <div class="half heading">
+          <h2 id='dashboard-heading'></h2>
+          <p id='dashboard-subheading'></p>
+        </div>
+        <div class="half heading">
+          <h2 id='pieChart-heading'></h2>
+          <p id='pieChart-subheading'></p>
+        </div>
+        <div class="half flipped">
+          <div class="inner-flex" id='dashboard'></div>
+        </div>
+        <div class="half">
+          <div class="inner-flex" id="pieChart"></div>
+        </div>
+      </section> 
+      <section class="container">
+        <p class="inner-flex" id="print-info">
+          <a href="https://github.com/EvPng/WikipediaDramatizer" target="_blank" rel="noopener noreferer">Github</a>
+          <a href="https://www.evpeng.com" target="_blank" rel="noopener noreferer">Author</a>
+        </p>
+      </section>
+    </div>
+
   </div>
 
+  <script src="p5.js"></script>
+  <script src="p5.sound.js"></script>
 
-
-
-  <aside class="aside aside-1">       <div id='dashboard'></div>  </aside>
-
-  <aside class="aside aside-2">      <div id="pieChart"></div>  </aside>
-
-  </div>
-    <aside class="aside aside-2">        <p id="pageHistory"></p>  </aside>
-    <aside class="aside aside-2">        <p id="print"></p>  </aside>
-
-
-
-
-
-
-
-</div>
-
-
-
-<script src="p5.js"></script>
-<script src="p5.sound.js"></script>
-
-<script src="calendarheatmap.js"></script>
-<script src="sketch.js"></script>
-
+  <script src="calendarheatmap.js"></script>
+  <script src="sketch.js"></script>
 
 </body>
 </html>

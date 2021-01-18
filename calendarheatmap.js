@@ -1,13 +1,13 @@
 
 function calendarHeatmap() {
   // defaults
-  var width = 1700;
-  var height = 200;
-  var legendWidth = 50;
   var selector = '#calendar';
+  var width = 1440; //d3.select(selector).style('width');
+  var height = 150;
+  var legendWidth = 50;
   var SQUARE_LENGTH = 15;
   var SQUARE_PADDING = 2;
-  var MONTH_LABEL_PADDING = 12;
+  var MONTH_LABEL_PADDING = 24;
   // var now = moment().endOf('day').toDate();
   // var yearAgo = moment().startOf('day').subtract(1, 'year').toDate();
   var startDate = null;
@@ -116,6 +116,8 @@ function calendarHeatmap() {
       max = d3.max(chart.data(), function (d) { return d.count; }); // max data value
     }
 
+    // width = dateRange.length * (SQUARE_LENGTH + SQUARE_PADDING) + 500
+
     // color range
     var color = ((d3.scale && d3.scale.linear) || d3.scaleLinear)()
       .range(chart.colorRange())
@@ -133,7 +135,10 @@ function calendarHeatmap() {
         .attr('width', width)
         .attr('class', 'calendar-heatmap')
         .attr('height', height)
-        // .style('padding', '36px');
+        .style('padding-top', '2px')
+        .style('padding-left', '12px')
+        .style('padding-right', '12px')
+        .style('padding-bottom', '96px');
 
       dayRects = svg.selectAll('.day-cell')
         .data(dateRange);  //  array of days for the last yr
@@ -189,20 +194,20 @@ function calendarHeatmap() {
             .attr('class', 'calendar-heatmap-legend')
             .attr('width', SQUARE_LENGTH)
             .attr('height', SQUARE_LENGTH)
-            .attr('x', function (d, i) { return MONTH_LABEL_PADDING + (i + 2) * 15; })
-            .attr('y', height + SQUARE_PADDING)
+            .attr('x', function (d, i) { return 5 + (i + 2) * 15; })
+            .attr('y', height + SQUARE_PADDING * 6)
             .attr('fill', function (d) { return d; });
 
         legendGroup.append('text')
           .attr('class', 'calendar-heatmap-legend-text calendar-heatmap-legend-text-less')
-          .attr('x', MONTH_LABEL_PADDING)
-          .attr('y', height + SQUARE_LENGTH)
+          .attr('x', 5)
+          .attr('y', height + SQUARE_LENGTH + SQUARE_PADDING * 5)
           .text(locale.Less);
 
         legendGroup.append('text')
           .attr('class', 'calendar-heatmap-legend-text calendar-heatmap-legend-text-more')
-          .attr('x', MONTH_LABEL_PADDING + SQUARE_PADDING * 3 + (colorRange.length + 2) * 15)
-          .attr('y', height + SQUARE_LENGTH)
+          .attr('x', 5 + SQUARE_PADDING * 3 + (colorRange.length + 2) * 15)
+          .attr('y', height + SQUARE_LENGTH + SQUARE_PADDING * 5)
           .text(locale.More);
       }
 
